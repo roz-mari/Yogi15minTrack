@@ -1,4 +1,9 @@
 package com.yogi15mintrack.yogi15mintrack.users.dto;
 
-public class UserResponse {
+public record UserResponse (
+        Long id,
+        String username,
+        String email,
+        String role
+) {
 }
