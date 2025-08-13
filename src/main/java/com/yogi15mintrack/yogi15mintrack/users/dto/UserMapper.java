@@ -16,7 +16,7 @@ public final class UserMapper {
                 .build();
     }
 
-public staticg UserResponse toDto(User user) {
+public static UserResponse toDto(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getUsername(),
