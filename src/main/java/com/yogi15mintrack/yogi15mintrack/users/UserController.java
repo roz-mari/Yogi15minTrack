@@ -7,8 +7,6 @@ import com.yogi15mintrack.yogi15mintrack.users.dto.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionResponse;
-import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionResponse;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
