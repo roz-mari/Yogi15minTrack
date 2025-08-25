@@ -1,5 +1,6 @@
 package com.yogi15mintrack.yogi15mintrack.sessions;
 
+import com.yogi15mintrack.yogi15mintrack.video.Video;
 import jakarta.persistence.*;
 import lombok.*;
 
