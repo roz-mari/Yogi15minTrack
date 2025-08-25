@@ -4,8 +4,8 @@ package com.yogi15mintrack.yogi15mintrack.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.yogi15mintrack.yogi15mintrack.security.JwtAuthFilter;
-import com.yogi15mintrack.yogi15mintrack.security.JwtService;
+import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtService;
+import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtAuthFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
@@ -95,7 +95,7 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(entryPoint))
                         .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sessions", "/sessions/today").authenticated()
@@ -104,7 +104,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/sessions/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/completed").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/completed", "/completed/today", "/streaks").hasRole("USER")
-                        .anyRequest().authenticated()
+                                .requestMatchers("/videos/upload").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/videos/**").hasRole("ADMIN")
+
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

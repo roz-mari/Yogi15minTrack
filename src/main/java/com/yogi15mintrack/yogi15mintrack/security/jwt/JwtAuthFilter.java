@@ -1,5 +1,6 @@
-package com.yogi15mintrack.yogi15mintrack.security;
+package com.yogi15mintrack.yogi15mintrack.security.jwt;
 
+import com.yogi15mintrack.yogi15mintrack.security.CustomUserDetail;
 import com.yogi15mintrack.yogi15mintrack.users.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

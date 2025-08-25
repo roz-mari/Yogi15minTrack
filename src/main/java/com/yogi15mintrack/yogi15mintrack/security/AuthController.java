@@ -1,5 +1,6 @@
 package com.yogi15mintrack.yogi15mintrack.security;
 
+import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtService;
 import com.yogi15mintrack.yogi15mintrack.users.UserService;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserLoginRequest;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserRegisterRequest;
@@ -7,7 +8,7 @@ import com.yogi15mintrack.yogi15mintrack.users.dto.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import com.yogi15mintrack.yogi15mintrack.security.JwtService.JwtResponse;
+import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtService.JwtResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

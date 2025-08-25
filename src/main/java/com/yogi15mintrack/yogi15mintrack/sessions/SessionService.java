@@ -1,7 +1,10 @@
 package com.yogi15mintrack.yogi15mintrack.sessions;
 
 
+import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionCreateRequest;
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionResponse;
+import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionUpdateRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,41 +15,59 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SessionService {
+
     private final SessionRepository sessionRepository;
 
+    @Transactional
     public List<SessionResponse> getAllSessions() {
-        return sessionRepository.findAll().stream()
+        return sessionRepository.findAll()
+                .stream()
                 .map(this::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    @Transactional
     public SessionResponse getTodaySession() {
-        int today = LocalDate.now().getDayOfWeek().getValue(); // 1=Пн..7=Вс
-        return sessionRepository.findByDayOfWeek(today)
-                .map(this::toResponse)
-                .orElseThrow(() -> new RuntimeException("Session not found for today"));
+        int today = LocalDate.now().getDayOfWeek().getValue(); // 1..7
+        Session session = sessionRepository.findByDayOfWeek(today)
+                .orElseThrow(() -> new RuntimeException("Session not found for today (day " + today + ")"));
+        return toResponse(session);
     }
 
-    public SessionResponse createSession(SessionResponse req) {
-        Session session = new Session(null, req.getTitle(), req.getDescription(), req.getVideoUrl(), req.getDayOfWeek());
+    @Transactional
+    public SessionResponse createSession(SessionCreateRequest request) {
+        Session session = Session.builder()
+                .title(request.title())
+                .description(request.description())
+                .videoUrl(request.videoUrl())
+                .dayOfWeek(request.dayOfWeek())
+                .build();
         return toResponse(sessionRepository.save(session));
     }
 
-    public SessionResponse updateSession(Long id, SessionResponse req) {
+    @Transactional
+    public SessionResponse updateSession(Long id, SessionUpdateRequest request) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
-        session.setTitle(req.getTitle());
-        session.setDescription(req.getDescription());
-        session.setVideoUrl(req.getVideoUrl());
-        session.setDayOfWeek(req.getDayOfWeek());
+                .orElseThrow(() -> new RuntimeException("Session not found: " + id));
+        session.setTitle(request.title());
+        session.setDescription(request.description());
+        session.setVideoUrl(request.videoUrl());
+        session.setDayOfWeek(request.dayOfWeek());
         return toResponse(sessionRepository.save(session));
     }
 
+    @Transactional
     public void deleteSession(Long id) {
         sessionRepository.deleteById(id);
     }
 
-    private SessionResponse toResponse(Session s) {
-        return new SessionResponse(s.getId(), s.getTitle(), s.getDescription(), s.getVideoUrl(), s.getDayOfWeek());
+    private SessionResponse toResponse(Session session) {
+        return new SessionResponse(
+                session.getId(),
+                session.getTitle(),
+                session.getDescription(),
+                session.getVideoUrl(),
+                session.getDayOfWeek()
+        );
     }
 }
