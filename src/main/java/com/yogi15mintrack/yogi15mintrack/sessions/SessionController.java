@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/sessions")
 @RequiredArgsConstructor
 public class SessionController {
+
     private final SessionService sessionService;
 
     @GetMapping
