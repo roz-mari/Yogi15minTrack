@@ -39,9 +39,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final UserService userService;
+
     public SecurityConfig(UserService userService) {
         this.userService = userService;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -61,7 +63,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper mapper) {
+    public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, exception) -> {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
@@ -70,20 +72,21 @@ public class SecurityConfig {
                 """.formatted(exception.getMessage(), request.getRequestURI());
             response.getWriter().write(body);
         };
-        }
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("*"));
-        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        cfg.setAllowedHeaders(List.of("*"));
-        cfg.setAllowCredentials(false);
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    JwtAuthFilter jwtAuthFilter,
@@ -91,11 +94,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(entryPoint))
-                        .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sessions", "/sessions/today").authenticated()
@@ -104,10 +106,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/sessions/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/completed").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/completed", "/completed/today", "/streaks").hasRole("USER")
-                                .requestMatchers("/videos/upload").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/videos/**").hasRole("ADMIN")
-
-                                .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/videos/upload").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/videos/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -119,4 +120,3 @@ public class SecurityConfig {
         return cfg.getAuthenticationManager();
     }
 }
-
