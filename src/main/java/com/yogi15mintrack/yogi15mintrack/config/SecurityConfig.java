@@ -106,7 +106,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/sessions/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/completed").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/completed", "/completed/today", "/streaks").hasRole("USER")
-                        // унифицируем видео-роуты:
                         .requestMatchers(HttpMethod.POST, "/videos/upload").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/videos/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
