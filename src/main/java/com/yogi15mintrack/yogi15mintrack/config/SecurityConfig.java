@@ -38,11 +38,12 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final UserService userService;
+    //private final UserService userService;
 
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
-    }
+    //public SecurityConfig(UserService userService) {
+     //  this.userService = userService;
+    //}
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,7 +59,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthFilter jwtAuthFilter(JwtService jwtService) {
+    public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
         return new JwtAuthFilter(jwtService, userService);
     }
 

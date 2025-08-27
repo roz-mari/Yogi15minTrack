@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
@@ -66,13 +67,14 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByEmail(request.email())) {
             throw new EntityAlreadyExistsException(User.class.getSimpleName(), "email", request.email());
         }
-        String encodedPassword = passwordEncoder.encode(request.password());
+        //String encodedPassword = passwordEncoder.encode(request.password());
 
         User user = UserMapper.toEntity(request, role);
         user.setPassword(passwordEncoder.encode(request.password()));
 
-        User savedUser = userRepository.save(user);
-        return UserMapper.toDto(savedUser);
+       // User savedUser = userRepository.save(user);
+       // return UserMapper.toDto(savedUser);
+        return UserMapper.toDto(userRepository.save(user));
     }
 
     @PreAuthorize("isAuthenticated()")

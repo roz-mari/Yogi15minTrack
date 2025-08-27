@@ -60,25 +60,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-
-        if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = authHeader.substring(7);
-
-        try {
-            if (!jwtService.isValidToken(token)) {
-                throw new AuthenticationCredentialsNotFoundException("Invalid JWT token");
-            }
+        if (!jwtService.isValidToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"Unauthorized: invalid token\"}");
+            return;
+        }
 
             String username = jwtService.extractUsername(token);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 var domainUser = userService.getByUsername(username);
                 var principal = new CustomUserDetail(domainUser);
-
                 var authentication = new UsernamePasswordAuthenticationToken(
                         principal, null, principal.getAuthorities()
                 );
@@ -88,12 +87,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (AuthenticationException ex) {
-            SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Unauthorized: " + ex.getMessage() + "\"}");
-            response.getWriter().flush();
         }
     }
-}
+
