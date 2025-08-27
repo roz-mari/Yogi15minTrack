@@ -1,9 +1,8 @@
 package com.yogi15mintrack.yogi15mintrack.sessions;
 
-
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionCreateRequest;
-import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionResponse;
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionUpdateRequest;
+import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,6 +57,9 @@ public class SessionService {
 
     @Transactional
     public void deleteSession(Long id) {
+        if (!sessionRepository.existsById(id)) {
+            throw new RuntimeException("Session not found: " + id);
+        }
         sessionRepository.deleteById(id);
     }
 
