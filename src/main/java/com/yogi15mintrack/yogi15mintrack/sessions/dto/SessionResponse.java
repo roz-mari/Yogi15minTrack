@@ -13,5 +13,5 @@ public class SessionResponse {
     private String title;
     private String description;
     private String videoUrl;
-    private int dayOfWeek;
+    private int dayOrder;
 }
