@@ -7,19 +7,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Configuration
 public class DefaultAdminInitializer {
-    @Value("${admin.email}")
+    @Value("${admin.email:admin@yogi15.com}")
     private String adminEmail;
 
-    @Value("${admin.username}")
+    @Value("${admin.username:admin}")
     private String adminUsername;
 
-    @Value("${admin.password}")
+    @Value("${admin.password:admin123}")
     private String adminPassword;
 
     @Bean
