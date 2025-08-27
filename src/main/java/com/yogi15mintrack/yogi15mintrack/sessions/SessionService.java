@@ -28,7 +28,7 @@ public class SessionService {
 
     @Transactional
     public SessionResponse getTodaySession() {
-        int today = LocalDate.now().getDayOrder().getValue(); // 1..7
+        int today = LocalDate.now().getDayOfWeek().getValue(); // 1..7
         Session session = sessionRepository.findByDayOrder(today)
                 .orElseThrow(() -> new RuntimeException("Session not found for today (day " + today + ")"));
         return toResponse(session);
