@@ -38,12 +38,6 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    //private final UserService userService;
-
-    //public SecurityConfig(UserService userService) {
-     //  this.userService = userService;
-    //}
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
