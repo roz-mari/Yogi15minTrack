@@ -1,5 +1,9 @@
 package com.yogi15mintrack.yogi15mintrack.users;
 
+import com.yogi15mintrack.yogi15mintrack.exceptions.EntityAlreadyExistsException;
+import com.yogi15mintrack.yogi15mintrack.exceptions.EntityNotFoundException;
+import com.yogi15mintrack.yogi15mintrack.security.CustomUserDetail;
+import com.yogi15mintrack.yogi15mintrack.users.dto.UserMapper;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserRegisterRequest;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +17,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+@RequiredArgsConstructor // ✅ Исправлено: теперь зависимости инжектятся автоматически
+public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepository;  // ✅ Исправлено: final + @RequiredArgsConstructor
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
@@ -27,33 +32,36 @@ public class UserService implements UserDetailsService {
                 .toList();
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse getUserByIdAdmin(Long id) {
         return getUserById(id);
     }
 
+    @Override
     @PreAuthorize("isAuthenticated()")
     public UserResponse getOwnUser(Long id) {
         return getUserById(id);
     }
 
-    private UserResponse getUserById(Long id) {
+    private UserResponse getUserById(Long id){
         User user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(User.class.getSimpleName(), "id", id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName(), "id", id.toString()));
         return UserMapper.toDto(user);
     }
 
-    public User getByUsername(String username) {
+    @Override
+    public User getByUsername(String username){
         return userRepository.findByUsername(username)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(User.class.getSimpleName(), "username", username));
+                .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName(), "username", username));
     }
 
+    @Override
     public UserResponse addUser(UserRegisterRequest request) {
         return addUserByRole(request, Role.USER);
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse addAdmin(UserRegisterRequest request) {
         return addUserByRole(request, Role.ADMIN);
@@ -73,16 +81,17 @@ public class UserService implements UserDetailsService {
         return UserMapper.toDto(userRepository.save(user));
     }
 
+    @Override
     @PreAuthorize("isAuthenticated()")
     public UserResponse updateOwnUser(Long id, UserRegisterRequest request) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(User.class.getSimpleName(), "id", id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName(), "id", id.toString()));
 
         if (!existingUser.getUsername().equals(request.username())
                 && userRepository.findByUsername(request.username()).isPresent()) {
             throw new EntityAlreadyExistsException(User.class.getSimpleName(), "username", request.username());
         }
+
         if (!existingUser.getEmail().equals(request.email())
                 && userRepository.existsByEmail(request.email())) {
             throw new EntityAlreadyExistsException(User.class.getSimpleName(), "email", request.email());
@@ -91,14 +100,17 @@ public class UserService implements UserDetailsService {
         existingUser.setUsername(request.username());
         existingUser.setEmail(request.email());
         existingUser.setPassword(passwordEncoder.encode(request.password()));
+
         return UserMapper.toDto(userRepository.save(existingUser));
     }
 
+    @Override
     @PreAuthorize("isAuthenticated()")
     public String deleteOwnUser(Long id) {
         return deleteUserById(id);
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteUserByIdAdmin(Long id) {
         return deleteUserById(id);
@@ -116,6 +128,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
         return new CustomUserDetail(user);
     }
-
+}
