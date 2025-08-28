@@ -18,7 +18,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import com.yogi15mintrack.yogi15mintrack.users.UserService;
+import com.yogi15mintrack.yogi15mintrack.users.UserServiceImpl;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,9 +53,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
-        return new JwtAuthFilter(jwtService, userService);
+    //public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
+    //    return new JwtAuthFilter(jwtService, userService);
+    //}
+    public JwtAuthFilter jwtAuthFilter(JwtService jwtService,
+                                       org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
+        return new JwtAuthFilter(jwtService, userDetailsService);
     }
+
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
