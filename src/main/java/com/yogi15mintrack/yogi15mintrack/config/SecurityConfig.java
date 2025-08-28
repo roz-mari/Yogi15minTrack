@@ -38,16 +38,6 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-   // private final UserServiceImpl userService;
-    //public SecurityConfig(UserServiceImpl userService) { // инжект интерфейса
-    //    this.userService = userService;
-   // }
-
-
-    //public SecurityConfig(UserService userService) {
-     //  this.userService = userService;
-    //}
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
