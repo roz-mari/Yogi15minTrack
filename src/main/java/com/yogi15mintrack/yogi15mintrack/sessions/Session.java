@@ -15,9 +15,15 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
     private String description;
+
+    @Column(nullable = false)
     private String videoUrl;
-    private int dayOfWeek;
+
+    @Column(nullable = false)
+    private int dayOrder;
 }
 

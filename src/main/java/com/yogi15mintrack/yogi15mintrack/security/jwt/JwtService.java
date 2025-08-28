@@ -1,4 +1,4 @@
-package com.yogi15mintrack.yogi15mintrack.security;
+package com.yogi15mintrack.yogi15mintrack.security.jwt;
 
 import com.yogi15mintrack.yogi15mintrack.users.UserRepository;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserLoginRequest;
