@@ -100,7 +100,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/swagger-resources/**", "/webjars/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+
+
+                                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sessions", "/sessions/today").authenticated()
                         .requestMatchers(HttpMethod.POST, "/sessions").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/sessions/**").hasRole("ADMIN")
