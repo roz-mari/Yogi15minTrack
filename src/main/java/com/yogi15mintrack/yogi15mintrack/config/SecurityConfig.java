@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import com.yogi15mintrack.yogi15mintrack.users.UserServiceImpl;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,17 +36,6 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
-   // private final UserServiceImpl userService;
-    //public SecurityConfig(UserServiceImpl userService) { // инжект интерфейса
-    //    this.userService = userService;
-   // }
-
-
-    //public SecurityConfig(UserService userService) {
-     //  this.userService = userService;
-    //}
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
