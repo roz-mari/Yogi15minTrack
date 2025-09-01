@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import static com.cloudinary.AccessControlRule.AccessType.token;
+
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -33,7 +35,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         Set<String> exactExclusions = Set.of(
                 "/auth/register",
                 "/auth/login",
-                "/swagger-ui.html"
+                "/swagger-ui.html",
+                "/error"
         );
 
         List<String> prefixExclusions = List.of(
@@ -62,18 +65,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         String token = authHeader.substring(7);
-
-        if (!jwtService.isValidToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Unauthorized: invalid token\"}");
-            return;
-        }
-
+      
+        try {
+            if (!jwtService.isValidToken(token)) {
+                throw new RuntimeException("Invalid token");
+            }
+          
             String username = jwtService.extractUsername(token);
-
+          
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
                 var authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
@@ -85,4 +86,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         }
     }
-
+}
