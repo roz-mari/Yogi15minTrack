@@ -1,5 +1,9 @@
 package com.yogi15mintrack.yogi15mintrack.users;
 
+import com.yogi15mintrack.yogi15mintrack.exceptions.EntityAlreadyExistsException;
+import com.yogi15mintrack.yogi15mintrack.exceptions.EntityNotFoundException;
+import com.yogi15mintrack.yogi15mintrack.security.CustomUserDetail;
+import com.yogi15mintrack.yogi15mintrack.users.dto.UserMapper;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserRegisterRequest;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -118,4 +122,5 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return new CustomUserDetail(user);
     }
+}
 
