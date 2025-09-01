@@ -29,8 +29,9 @@ public class CompletedSession {
     @Column(name = "date_completed", nullable = false)
     private LocalDate dateCompleted;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String state;
+    private Mood state;;
 
     @Column(columnDefinition = "TEXT")
     private String note;
