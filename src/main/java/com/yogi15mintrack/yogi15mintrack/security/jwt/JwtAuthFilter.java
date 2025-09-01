@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import static com.cloudinary.AccessControlRule.AccessType.token;
-
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -65,14 +63,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         String token = authHeader.substring(7);
-      
+
         try {
             if (!jwtService.isValidToken(token)) {
                 throw new RuntimeException("Invalid token");
             }
-          
+
             String username = jwtService.extractUsername(token);
-          
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 var authentication = new UsernamePasswordAuthenticationToken(
@@ -82,8 +81,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } catch (Exception exception) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"invalid token\"}");
 
         }
+
     }
 }
