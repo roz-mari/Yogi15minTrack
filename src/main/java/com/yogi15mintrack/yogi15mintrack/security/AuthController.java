@@ -1,7 +1,7 @@
 package com.yogi15mintrack.yogi15mintrack.security;
 
 import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtService;
-import com.yogi15mintrack.yogi15mintrack.users.UserServiceImpl;
+import com.yogi15mintrack.yogi15mintrack.users.UserService;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserLoginRequest;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserRegisterRequest;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserResponse;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
     private final JwtService jwtService;
 
     @PostMapping("/register")
