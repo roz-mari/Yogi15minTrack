@@ -1,4 +1,3 @@
-// src/main/java/com/yogi15mintrack/yogi15mintrack/completed/CompletedSession.java
 package com.yogi15mintrack.yogi15mintrack.completedSessions;
 
 import com.yogi15mintrack.yogi15mintrack.sessions.Session;
