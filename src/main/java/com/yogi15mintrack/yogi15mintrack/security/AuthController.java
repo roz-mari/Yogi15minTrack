@@ -7,9 +7,11 @@ import com.yogi15mintrack.yogi15mintrack.users.dto.UserRegisterRequest;
 import com.yogi15mintrack.yogi15mintrack.users.dto.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtService.JwtResponse;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.yogi15mintrack.yogi15mintrack.security.jwt.JwtResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,7 +38,12 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal CustomUserDetail principal) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserResponse> me(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetail principal)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(userService.getOwnUser(principal.getId()));
     }
 }
+
