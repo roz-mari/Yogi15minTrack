@@ -8,10 +8,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+
 
 @Service
 @RequiredArgsConstructor
@@ -72,12 +70,6 @@ public class JwtService {
         return Keys.hmacShaKeyFor(bytes);
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public class JwtResponse {
-        private String token;
-    }
     public JwtResponse loginAuthentication (UserLoginRequest userLoginRequest){
         userRepository.findByUsername(userLoginRequest.username()).orElseThrow(() -> new EntityNotFoundException("User", "username", userLoginRequest.username()));
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.username(), userLoginRequest.password()));
@@ -86,4 +78,3 @@ public class JwtService {
         return new JwtResponse(token);
     }
 }
-
