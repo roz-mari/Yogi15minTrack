@@ -18,7 +18,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import com.yogi15mintrack.yogi15mintrack.users.UserService;
+import com.yogi15mintrack.yogi15mintrack.users.UserServiceImpl;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,7 +38,11 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    //private final UserService userService;
+   // private final UserServiceImpl userService;
+    //public SecurityConfig(UserServiceImpl userService) { // инжект интерфейса
+    //    this.userService = userService;
+   // }
+
 
     //public SecurityConfig(UserService userService) {
      //  this.userService = userService;
@@ -59,9 +63,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
-        return new JwtAuthFilter(jwtService, userService);
+    //public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
+    //    return new JwtAuthFilter(jwtService, userService);
+    //}
+    public JwtAuthFilter jwtAuthFilter(JwtService jwtService,
+                                       org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
+        return new JwtAuthFilter(jwtService, userDetailsService);
     }
+
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
