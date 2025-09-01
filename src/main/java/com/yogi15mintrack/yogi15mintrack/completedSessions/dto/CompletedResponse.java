@@ -1,5 +1,7 @@
 package com.yogi15mintrack.yogi15mintrack.completedSessions.dto;
 
+import com.yogi15mintrack.yogi15mintrack.completedSessions.Mood;
+
 import java.time.LocalDate;
 
 public record CompletedResponse (
@@ -7,7 +9,7 @@ public record CompletedResponse (
         Long sessionId,
         String sessionTitle,
         LocalDate dateCompleted,
-        String state,
+        Mood state,
         String note
 ) {
 }
