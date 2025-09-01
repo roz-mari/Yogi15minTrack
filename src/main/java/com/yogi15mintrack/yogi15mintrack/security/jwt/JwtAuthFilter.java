@@ -7,17 +7,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+
+import static com.cloudinary.AccessControlRule.AccessType.token;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -36,7 +35,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         Set<String> exactExclusions = Set.of(
                 "/auth/register",
                 "/auth/login",
-                "/swagger-ui.html"
+                "/swagger-ui.html",
+                "/error"
         );
 
         List<String> prefixExclusions = List.of(
@@ -66,18 +66,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        if (!jwtService.isValidToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Unauthorized: invalid token\"}");
-            return;
-        }
-
+        try {
+            if (!jwtService.isValidToken(token)) {
+                throw new RuntimeException("Invalid token");
+            }
             String username = jwtService.extractUsername(token);
-
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 var domainUser = userService.getByUsername(username);
                 var principal = new CustomUserDetail(domainUser);
+
                 var authentication = new UsernamePasswordAuthenticationToken(
                         principal, null, principal.getAuthorities()
                 );
@@ -86,7 +83,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
-
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"invalid token\"}");
         }
     }
-
+}
