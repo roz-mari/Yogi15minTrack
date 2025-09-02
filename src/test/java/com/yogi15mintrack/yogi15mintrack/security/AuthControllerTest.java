@@ -16,13 +16,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -33,7 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@SpringBootTest
+@AutoConfigureMockMvc
     class AuthControllerTest {
 
         @Autowired
@@ -166,7 +168,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                     void no_auth_401() throws Exception {
                         UserRegisterRequest request = new UserRegisterRequest("anna", "anna@yogi.com", "Passw0rd!");
 
-                        // Запрос без авторизации
                         mockMvc.perform(post("/auth/register-admin")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(asJson(request, objectMapper)))
