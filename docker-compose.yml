@@ -19,7 +19,7 @@ services:
       DB_PASSWORD: root
       JWT_SECRET: super-secret-change-me
     ports:
-      - "8080:8080"
+      - "8082:8080"
 
 volumes:
   db_data:
