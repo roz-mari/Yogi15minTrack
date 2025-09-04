@@ -29,6 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) return true;
 
         Set<String> exactExclusions = Set.of(
                 "/auth/register",
@@ -89,5 +90,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         }
 
+    private void writeUnauthorized(HttpServletResponse response, String msg) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\":\"" + message + "\"}");
     }
-}
+    }
+
+  

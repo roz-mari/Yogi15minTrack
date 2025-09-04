@@ -51,9 +51,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    //public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
-    //    return new JwtAuthFilter(jwtService, userService);
-    //}
     public JwtAuthFilter jwtAuthFilter(JwtService jwtService,
                                        org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
         return new JwtAuthFilter(jwtService, userDetailsService);
