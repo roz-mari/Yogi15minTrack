@@ -1,4 +1,3 @@
-// src/main/java/com/yogi15mintrack/yogi15mintrack/completed/CompletedSession.java
 package com.yogi15mintrack.yogi15mintrack.completedSessions;
 
 import com.yogi15mintrack.yogi15mintrack.sessions.Session;
@@ -29,8 +28,9 @@ public class CompletedSession {
     @Column(name = "date_completed", nullable = false)
     private LocalDate dateCompleted;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String state;
+    private Mood state;;
 
     @Column(columnDefinition = "TEXT")
     private String note;

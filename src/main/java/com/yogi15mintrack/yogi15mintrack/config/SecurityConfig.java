@@ -37,7 +37,6 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -52,9 +51,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    //public JwtAuthFilter jwtAuthFilter(JwtService jwtService, UserService userService) {
-    //    return new JwtAuthFilter(jwtService, userService);
-    //}
     public JwtAuthFilter jwtAuthFilter(JwtService jwtService,
                                        org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
         return new JwtAuthFilter(jwtService, userDetailsService);
@@ -98,7 +94,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/swagger-resources/**", "/webjars/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+
+
+                                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sessions", "/sessions/today").authenticated()
                         .requestMatchers(HttpMethod.POST, "/sessions").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/sessions/**").hasRole("ADMIN")
