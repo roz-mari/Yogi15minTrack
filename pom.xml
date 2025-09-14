@@ -136,5 +136,19 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<build>
+				<directory>/tmp/build</directory>
+			</build>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<spring.profiles.active>docker</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
