@@ -1,0 +1,72 @@
+# Docker Compose configuration for Yogi15MinTrack testing with Maven image
+# This configuration runs tests using the official Maven Docker image
+# without building a custom container image
+
+version: "3.9"
+
+services:
+  # Test service using official Maven image
+  test:
+    # Use official Maven image with Eclipse Temurin JDK 21
+    image: maven:3.9.11-eclipse-temurin-21
+
+    # Set working directory inside container
+    working_dir: /src
+
+    # Mount source code as read-only volume for testing
+    volumes:
+      - type: bind
+        source: . # Current directory (project root)
+        target: /src # Mount point inside container
+        read_only: true # Prevent modifications to source code
+
+    # Run Maven test command with test profile
+    entrypoint: ["mvn", "-Ptest", "clean", "verify", "--no-transfer-progress"]
+
+    # Custom container name for easier identification
+    container_name: yogi15mintrack-test
+
+    # Environment variables passed to the SpringBoot application
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8080
+      - DB_URL=jdbc:mysql://test-db:3306/yogi15mintrack
+      - DB_USERNAME=yogi
+      - DB_PASSWORD=yogi123
+
+    # Restart policy - never restart (single-run test container)
+    restart: "no"
+
+    # Service dependencies - ensures database is healthy before starting app
+    depends_on:
+      test-db:
+        condition: service_healthy
+
+    networks:
+      - test-network
+
+  # MySQL database service for testing
+  test-db:
+    image: mysql:8.0
+    container_name: test-db
+    environment:
+      MYSQL_DATABASE: yogi15mintrack
+      MYSQL_USER: yogi
+      MYSQL_PASSWORD: yogi123
+      MYSQL_ROOT_PASSWORD: root123
+    restart: "no"
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "yogi", "-pyogi123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    networks:
+      - test-network
+
+# Network configuration
+networks:
+  test-network:
+    driver: bridge
