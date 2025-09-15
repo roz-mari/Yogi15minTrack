@@ -142,9 +142,6 @@
 			<build>
 				<directory>/tmp/build</directory>
 			</build>
-		</profile>
-		<profile>
-			<id>test</id>
 			<properties>
 				<spring.profiles.active>docker</spring.profiles.active>
 			</properties>
