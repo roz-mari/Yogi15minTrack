@@ -15,8 +15,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Run tests with docker-compose
-        run: docker compose -f docker-compose-test.yml up --quiet-pull --abort-on-container-exit --exit-code-from test
+      - name: Run tests inside Maven container
+        run: |
+          docker compose -f docker-compose-test.yml run --rm test mvn -Ptest clean verify
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -43,27 +44,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      # (Optional) Create GitHub Release Draft
-      # - name: Create GitHub Release Draft
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref_name }}
-      #     release_name: Release ${{ github.ref_name }}
-      #     draft: true
-      #     prerelease: false
-      #     body: |
-      #       ## Changes
-      #
-      #       Docker image: `${{ secrets.DOCKER_USERNAME }}/yogi15mintrack:${{ github.ref_name }}`
-      #
-      #       ## Installation
-      #
-      #       ```bash
-      #       docker pull ${{ secrets.DOCKER_USERNAME }}/yogi15mintrack:${{ github.ref_name }}
-      #       ```
 
       - name: Clean up
         if: always()
