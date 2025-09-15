@@ -20,8 +20,7 @@ services:
         target: /src # Mount point inside container
         read_only: true # Prevent modifications to source code
 
-    # Run Maven test command with test profile
-    entrypoint: ["mvn", "-Ptest", "clean", "verify", "--no-transfer-progress"]
+
 
     # Custom container name for easier identification
     container_name: yogi15mintrack-test
