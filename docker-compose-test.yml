@@ -43,6 +43,7 @@ services:
 
     networks:
       - test-network
+    command: mvn test
 
   # MySQL database service for testing
   test-db:
