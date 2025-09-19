@@ -13,7 +13,12 @@ services:
     env_file:
       - .env
 
-    entrypoint: [ "sh", "-c", "until mysqladmin ping -h test-db --silent; do sleep 2; done && mvn -Ptest clean verify --no-transfer-progress" ]
+    entrypoint: [ 
+      "sh", 
+      "-c", 
+      "until mysqladmin ping -h test-db --silent; do sleep 2; done && \
+      mvn -Ptest clean verify --no-transfer-progress -Dsurefire.reportDirectory=/tmp/surefire-reports"
+    ]
 
     container_name: yogi15mintrack-test
     depends_on:
