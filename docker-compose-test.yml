@@ -10,11 +10,6 @@ services:
         target: /src
         read_only: true
 
-      - type: bind
-        source: ./test-reports
-        target: /tmp/build/surefire-reports
-        read_only: false
-
     env_file:
       - .env
 
