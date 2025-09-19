@@ -18,31 +18,24 @@ services:
     env_file:
       - .env
 
-    entrypoint: ["mvn", "-Ptest", "clean", "verify", "--no-transfer-progress"]
+    entrypoint: [ "sh", "-c", "sleep 30 && mvn -Ptest clean verify --no-transfer-progress" ]
+
     container_name: yogi15mintrack-test
-
-  depends_on:
-    test-db:
-      condition: service_healthy
-
+    depends_on:
+      - test-db
     networks:
       - test-network
 
   test-db:
-      image: mysql:8.0
-      container_name: test-db
-      environment:
-        MYSQL_DATABASE: yogi15mintrack
-        MYSQL_ROOT_PASSWORD: root
-      restart: "no"
-      healthcheck:
-        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-        start_period: 30s
-      networks:
-        - test-network
-  networks:
-    test-network:
-      driver: bridge
+    image: mysql:8.0
+    container_name: test-db
+    environment:
+      MYSQL_DATABASE: yogi15mintrack
+      MYSQL_ROOT_PASSWORD: root
+    restart: "no"
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
