@@ -18,7 +18,7 @@ services:
     env_file:
       - .env
 
-    entrypoint: [ "sh", "-c", "sleep 30 && mvn -Ptest clean verify --no-transfer-progress" ]
+    entrypoint: [ "sh", "-c", "until mysqladmin ping -h test-db --silent; do sleep 2; done && mvn -Ptest clean verify --no-transfer-progress" ]
 
     container_name: yogi15mintrack-test
     depends_on:
