@@ -14,9 +14,21 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Create .env file
+        run: |
+                echo "DB_URL=jdbc:mysql://test-db:3306/yogi15mintrack" >> .env
+                echo "SERVER_PORT=8080" >> .env
+                echo "DB_USER=root" >> .env
+                echo "DB_PASSWORD=root" >> .env
+                echo "SPRING_PROFILES_ACTIVE=test" >> .env
+                echo "ADMIN_EMAIL=admin12@example.com" >> .env
+                echo "ADMIN_USERNAME=admin12" >> .env
+                echo "ADMIN_PASSWORD=admin123" >> .env
+
       - name: Run tests with docker-compose
         run: docker compose -f docker-compose-test.yml up --abort-on-container-exit --exit-code-from test
 
       - name: Clean up
         if: always()
         run: docker compose -f docker-compose-test.yml down -v
+
