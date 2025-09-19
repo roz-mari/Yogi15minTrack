@@ -6,20 +6,16 @@ services:
     working_dir: /src
     volumes:
       - type: bind
-<<<<<<< Updated upstream
-        source: . # Current directory (project root)
-        target: /src # Mount point inside container
-        read_only: true # Prevent modifications to source code
-
-
-
-    # Custom container name for easier identification
-=======
         source: .
         target: /src
         read_only: true
+
+      - type: bind
+        source: ./test-reports
+        target: /tmp/build/surefire-reports
+        read_only: false
+
     entrypoint: ["mvn", "-Ptest", "clean", "verify", "--no-transfer-progress"]
->>>>>>> Stashed changes
     container_name: yogi15mintrack-test
     environment:
       - SPRING_PROFILES_ACTIVE=test
@@ -33,7 +29,6 @@ services:
         condition: service_healthy
     networks:
       - test-network
-    command: mvn test
 
   test-db:
     image: mysql:8.0
