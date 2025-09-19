@@ -43,7 +43,6 @@ services:
         start_period: 30s
       networks:
         - test-network
-
   networks:
     test-network:
       driver: bridge
