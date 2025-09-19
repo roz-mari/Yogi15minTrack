@@ -15,37 +15,35 @@ services:
         target: /tmp/build/surefire-reports
         read_only: false
 
+    env_file:
+      - .env
+
     entrypoint: ["mvn", "-Ptest", "clean", "verify", "--no-transfer-progress"]
     container_name: yogi15mintrack-test
-    environment:
-      - SPRING_PROFILES_ACTIVE=test
-      - SERVER_PORT=8080
-      - DB_URL=jdbc:mysql://test-db:3306/yogi15mintrack
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-    restart: "no"
-    depends_on:
-      test-db:
-        condition: service_healthy
+
+  depends_on:
+    test-db:
+      condition: service_healthy
+
     networks:
       - test-network
 
   test-db:
-    image: mysql:8.0
-    container_name: test-db
-    environment:
-      MYSQL_DATABASE: yogi15mintrack
-      MYSQL_ROOT_PASSWORD: root
-    restart: "no"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-    networks:
-      - test-network
+      image: mysql:8.0
+      container_name: test-db
+      environment:
+        MYSQL_DATABASE: yogi15mintrack
+        MYSQL_ROOT_PASSWORD: root
+      restart: "no"
+      healthcheck:
+        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 30s
+      networks:
+        - test-network
 
-networks:
-  test-network:
-    driver: bridge
+  networks:
+    test-network:
+      driver: bridge
