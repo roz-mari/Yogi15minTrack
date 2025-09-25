@@ -16,8 +16,7 @@ services:
     entrypoint: [ 
       "sh", 
       "-c", 
-      "until mysqladmin ping -h test-db --silent; do sleep 2; done && \
-      mvn -Ptest verify --no-transfer-progress \
+      "mvn -Ptest verify --no-transfer-progress \
         -Dproject.build.directory=/tmp/build \
         -Dsurefire.reportDirectory=/tmp/build/surefire-reports \
         -DfailIfNoTests=false"
@@ -25,7 +24,8 @@ services:
 
     container_name: yogi15mintrack-test
     depends_on:
-      - test-db
+      test-db:
+        condition: service_healthy
     networks:
       - test-network
 
@@ -36,6 +36,12 @@ services:
       MYSQL_DATABASE: yogi15mintrack
       MYSQL_ROOT_PASSWORD: root
     restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -proot || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
     networks:
       - test-network
 
