@@ -97,9 +97,7 @@ public class SecurityConfig {
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-
-
-                                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                                
                         .requestMatchers(HttpMethod.GET, "/sessions", "/sessions/today").authenticated()
                         .requestMatchers(HttpMethod.POST, "/sessions").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/sessions/**").hasRole("ADMIN")
