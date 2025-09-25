@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   test:
     image: maven:3.9.11-eclipse-temurin-21
@@ -9,18 +7,17 @@ services:
         source: .
         target: /src
         read_only: true
-
-    env_file:
       - .env
 
-    entrypoint: [ 
-      "sh", 
-      "-c", 
-      "mvn -Ptest verify --no-transfer-progress \
-        -Dproject.build.directory=/tmp/build \
-        -Dsurefire.reportDirectory=/tmp/build/surefire-reports \
-        -Dmaven.clean.skip=true \
-        -DfailIfNoTests=false"
+    entrypoint: [
+      "sh",
+      "-c",
+      "rm -rf /tmp/build || true; \
+       mvn -Ptest verify --no-transfer-progress \
+         -Dproject.build.directory=/tmp/build \
+         -Dsurefire.reportDirectory=/tmp/build/surefire-reports \
+         -Dclean.skip=true \
+         -DfailIfNoTests=false"
     ]
 
     container_name: yogi15mintrack-test
