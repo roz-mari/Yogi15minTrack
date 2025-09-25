@@ -19,6 +19,7 @@ services:
       "mvn -Ptest verify --no-transfer-progress \
         -Dproject.build.directory=/tmp/build \
         -Dsurefire.reportDirectory=/tmp/build/surefire-reports \
+        -Dmaven.clean.skip=true \
         -DfailIfNoTests=false"
     ]
 
