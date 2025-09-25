@@ -31,7 +31,7 @@ Users register and log in with JWT-based authentication. Roles **USER** and **AD
 
 ##  Tech Stack
 
-- **Backend**: Java 17, Spring Boot 3
+- **Backend**: Java 21, Spring Boot 3
 - **Security**: Spring Security + JWT
 - **Database**: MySQL
 - **ORM**: Spring Data JPA / Hibernate
