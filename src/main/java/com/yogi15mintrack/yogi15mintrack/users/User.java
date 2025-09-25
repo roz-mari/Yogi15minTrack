@@ -3,7 +3,6 @@ package com.yogi15mintrack.yogi15mintrack.users;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
 @Entity
 @Table(name = "users")
