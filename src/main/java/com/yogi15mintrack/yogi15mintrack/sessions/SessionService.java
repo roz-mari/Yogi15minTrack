@@ -3,13 +3,13 @@ package com.yogi15mintrack.yogi15mintrack.sessions;
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionCreateRequest;
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionUpdateRequest;
 import com.yogi15mintrack.yogi15mintrack.sessions.dto.SessionResponse;
+import com.yogi15mintrack.yogi15mintrack.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class SessionService {
     public SessionResponse getTodaySession() {
         int today = LocalDate.now().getDayOfWeek().getValue(); // 1..7
         Session session = sessionRepository.findByDayOrder(today)
-                .orElseThrow(() -> new RuntimeException("Session not found for today (day " + today + ")"));
+                .orElseThrow(() -> new EntityNotFoundException("Session", "dayOrder", String.valueOf(today)));
         return toResponse(session);
     }
 
@@ -47,7 +47,7 @@ public class SessionService {
     @Transactional
     public SessionResponse updateSession(Long id, SessionUpdateRequest request) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Session", "id", String.valueOf(id)));
         session.setTitle(request.title());
         session.setDescription(request.description());
         session.setVideoUrl(request.videoUrl());
@@ -58,7 +58,7 @@ public class SessionService {
     @Transactional
     public void deleteSession(Long id) {
         if (!sessionRepository.existsById(id)) {
-            throw new RuntimeException("Session not found: " + id);
+            throw new EntityNotFoundException("Session", "id", String.valueOf(id));
         }
         sessionRepository.deleteById(id);
     }
