@@ -7,16 +7,19 @@ services:
         source: .
         target: /src
         read_only: true
+
+    env_file:
       - .env
 
     entrypoint: [
       "sh",
       "-c",
-      "rm -rf /tmp/build || true; \
+      "unset MAVEN_ARGS MAVEN_CLI_OPTS || true; \
+       rm -rf /tmp/build || true; \
        mvn -Ptest verify --no-transfer-progress \
          -Dproject.build.directory=/tmp/build \
          -Dsurefire.reportDirectory=/tmp/build/surefire-reports \
-         -Dclean.skip=true \
+         -Dmaven.clean.skip=true -Dclean.skip=true \
          -DfailIfNoTests=false"
     ]
 
